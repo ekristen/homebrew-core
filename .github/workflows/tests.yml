@@ -227,7 +227,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: logs-${{ matrix.runner }}
-          path: bottles/logs
+          path: ${{matrix.workdir || github.workspace}}/bottles/logs
 
       - name: Delete logs and home
         if: always()
