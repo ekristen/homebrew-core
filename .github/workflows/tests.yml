@@ -158,7 +158,7 @@ jobs:
         runner: ${{fromJson(needs.setup_tests.outputs.runners)}}
       fail-fast: ${{fromJson(needs.setup_tests.outputs.fail-fast)}}
     runs-on: ${{matrix.runner}}
-    container: ${{(matrix.runner == 'ubuntu-latest' || matrix.runner == 'linux-self-hosted-1') && fromJson(needs.setup_tests.outputs.container) || ''}}
+    container: ${{runner.os == 'Linux' && fromJson(needs.setup_tests.outputs.container) || ''}}
     timeout-minutes: ${{ (matrix.runner == 'ubuntu-latest' && 360) || fromJson(needs.setup_tests.outputs.timeout-minutes) }}
     defaults:
       run:
