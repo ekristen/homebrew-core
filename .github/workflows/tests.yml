@@ -105,7 +105,7 @@ jobs:
               core.setOutput('timeout-minutes', '60')
             }
 
-            const container = {options: '--user=linuxbrew'}
+            const container = {}
             if (label_names.includes('CI-linux-wheezy')) {
               console.log('CI-linux-wheezy label found. Using Linux Debian 7 (Wheezy) container.')
               container.image = 'homebrew/debian7:latest'
@@ -113,6 +113,7 @@ jobs:
               console.log('No CI-linux-wheezy label found. Using default Homebrew (Ubuntu 16.04) container.')
               container.image = 'ghcr.io/homebrew/ubuntu16.04:master'
             }
+            container.options = '--user=linuxbrew'
             core.setOutput('container', JSON.stringify(container))
 
             const test_bot_formulae_args = ["--only-formulae", "--junit", "--only-json-tab", "--skip-dependents"]
