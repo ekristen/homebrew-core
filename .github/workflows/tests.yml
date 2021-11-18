@@ -156,7 +156,7 @@ jobs:
         runner: ${{fromJson(needs.setup_tests.outputs.runners)}}
       fail-fast: ${{fromJson(needs.setup_tests.outputs.fail-fast)}}
     runs-on: ${{matrix.runner}}
-    container: ${{matrix.runner == 'ubuntu-latest' && fromJson('{"image":"homebrew/brew","options":"--user=linuxbrew"}')}}
+    container: ${{matrix.runner == 'ubuntu-latest' && fromJson('{"image":"homebrew/brew","options":"--user=linuxbrew"}') || ''}}
     timeout-minutes: ${{ (matrix.runner == 'ubuntu-latest' && 360) || fromJson(needs.setup_tests.outputs.timeout-minutes) }}
     defaults:
       run:
