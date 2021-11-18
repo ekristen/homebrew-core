@@ -107,13 +107,15 @@ jobs:
               core.setOutput('timeout-minutes', '60')
             }
 
+            const container = {options: '--user=linuxbrew'}
             if (label_names.includes('CI-linux-wheezy')) {
               console.log('CI-linux-wheezy label found. Using Linux Debian 7 (Wheezy) container.')
-              core.setOutput('container', 'homebrew/debian7:latest')
+              container.image = 'homebrew/debian7:latest'
             } else {
               console.log('No CI-linux-wheezy label found. Using default Homebrew (Ubuntu 16.04) container.')
-              core.setOutput('container', 'ghcr.io/homebrew/ubuntu16.04:master')
+              container.image = 'ghcr.io/homebrew/ubuntu16.04:master'
             }
+            core.setOutput('container', JSON.stringify(container))
 
             const test_bot_formulae_args = ["--only-formulae", "--junit", "--only-json-tab", "--skip-dependents"]
             test_bot_formulae_args.push('--testing-formulae=${{needs.tap_syntax.outputs.testing_formulae}}')
@@ -156,7 +158,7 @@ jobs:
         runner: ${{fromJson(needs.setup_tests.outputs.runners)}}
       fail-fast: ${{fromJson(needs.setup_tests.outputs.fail-fast)}}
     runs-on: ${{matrix.runner}}
-    container: ${{matrix.runner == 'ubuntu-latest' && fromJson('{"image":"homebrew/brew","options":"--user=linuxbrew"}') || ''}}
+    container: ${{(matrix.runner == 'ubuntu-latest' || matrix.runner == 'linux-self-hosted-1') && fromJson(needs.setup_tests.outputs.container) || ''}}
     timeout-minutes: ${{ (matrix.runner == 'ubuntu-latest' && 360) || fromJson(needs.setup_tests.outputs.timeout-minutes) }}
     defaults:
       run:
