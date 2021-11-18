@@ -4,6 +4,7 @@ class Hello < Formula
   url "https://ftp.gnu.org/gnu/hello/hello-2.10.tar.gz"
   sha256 "31e066137a962676e89f69d1b65382de95a7ef7d914b8cb956f41ea72e0f516b"
   license "GPL-3.0-or-later"
+  revision 1
 
   bottle do
     sha256 cellar: :any_skip_relocation, arm64_monterey: "482983834d20785200d4c07d8102c040d3385c81f9d8e94b93b3bcedb137800a"
