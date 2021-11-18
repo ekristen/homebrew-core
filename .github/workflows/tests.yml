@@ -46,7 +46,7 @@ jobs:
     needs: tap_syntax
     outputs:
       syntax-only: ${{ steps.check-labels.outputs.syntax-only }}
-      runners: ${{ steps.check-labels.outputs.runners }}
+      linux-runner: ${{ steps.check-labels.outputs.linux-runner }}
       fail-fast: ${{ steps.check-labels.outputs.fail-fast }}
       test-dependents: ${{ steps.check-labels.outputs.test-dependents }}
       timeout-minutes: ${{ steps.check-labels.outputs.timeout-minutes }}
@@ -75,13 +75,11 @@ jobs:
               core.setOutput('syntax-only', 'false')
             }
 
-            const runners = ["12-arm64", "12", "11-arm64", "11", "10.15"]
             if (label_names.includes('CI-linux-self-hosted')) {
-              runners.push('linux-self-hosted-1')
+              core.setOutput('linux-runner', 'linux-self-hosted-1')
             } else {
-              runners.push('ubuntu-latest')
+              core.setOutput('linux-runner', 'ubuntu-latest')
             }
-            core.setOutput('runners', JSON.stringify(runners))
 
             if (label_names.includes('CI-no-fail-fast')) {
               console.log('CI-no-fail-fast label found. Continuing tests despite failing matrix builds.')
@@ -155,10 +153,17 @@ jobs:
     if: ${{github.event_name == 'pull_request' && fromJson(needs.setup_tests.outputs.syntax-only) == false}}
     strategy:
       matrix:
-        runner: ${{fromJson(needs.setup_tests.outputs.runners)}}
+        include:
+          - runner: '12-arm64'
+          - runner: '12'
+          - runner: '11-arm64'
+          - runner: '11'
+          - runner: '10.5'
+          - runner: ${{needs.setup_tests.outputs.linux-runner}}
+            container: ${{fromJson(needs.setup_tests.outputs.container)}}
       fail-fast: ${{fromJson(needs.setup_tests.outputs.fail-fast)}}
     runs-on: ${{matrix.runner}}
-    container: ${{runner.os == 'Linux' && fromJson(needs.setup_tests.outputs.container) || ''}}
+    container: ${{matrix.container}}
     timeout-minutes: ${{ (matrix.runner == 'ubuntu-latest' && 360) || fromJson(needs.setup_tests.outputs.timeout-minutes) }}
     defaults:
       run:
