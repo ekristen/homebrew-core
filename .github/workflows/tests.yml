@@ -252,7 +252,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: bottles-${{ matrix.runner }}
-          path: bottles/failed
+          path: ${{matrix.workdir || github.workspace}}/bottles/failed
 
       # Must be run before the `Upload bottles` step so that failed
       # bottles are not included in the `bottles` artifact.
@@ -265,7 +265,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: bottles
-          path: bottles
+          path: ${{matrix.workdir || github.workspace}}/bottles
 
       - name: Post cleanup
         if: always()
