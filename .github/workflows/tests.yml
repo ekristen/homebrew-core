@@ -162,6 +162,7 @@ jobs:
           - runner: '10.5'
           - runner: ${{needs.setup_tests.outputs.linux-runner}}
             container: ${{fromJson(needs.setup_tests.outputs.container)}}
+            workdir: /github/home
       fail-fast: ${{fromJson(needs.setup_tests.outputs.fail-fast)}}
     runs-on: ${{matrix.runner}}
     container: ${{matrix.container}}
@@ -169,7 +170,7 @@ jobs:
     defaults:
       run:
         shell: /bin/bash -e {0}
-        working-directory: ${{(runner.os == 'macOS' && github.workspace) || '/github/home'}}
+        working-directory: ${{matrix.workdir || github.workspace}}
     env:
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       HOMEBREW_GITHUB_API_TOKEN: ${{secrets.GITHUB_TOKEN}}
