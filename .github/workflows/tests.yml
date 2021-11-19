@@ -159,7 +159,7 @@ jobs:
           - runner: '12'
           - runner: '11-arm64'
           - runner: '11'
-          - runner: '10.5'
+          - runner: '10.15'
           - runner: ${{needs.setup_tests.outputs.linux-runner}}
             container: ${{fromJson(needs.setup_tests.outputs.container)}}
             workdir: /github/home
